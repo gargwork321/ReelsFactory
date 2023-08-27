@@ -1,32 +1,42 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  Image,
-  Video,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
-import VideoPlayer from 'react-native-video';
+import React, {useState} from 'react';
+import {View, Image, StyleSheet, TextInput} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import SquareButton from '../components/SquareButton';
 
 const ScratchPad = () => {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [text, setText] = useState<string>('Your Text');
+  const [emoji, setEmoji] = useState<string>('🙂');
+  const [isAddingText, setIsAddingText] = useState(false);
+  const [isMainMenuVisiable, setIsMainMenuVisiable] = useState(true);
+  const [isBGMenuVisiable, setIsBGMenuVisiable] = useState(false);
+  const [isTextMenuVisiable, setIsTextMenuVisiable] = useState(false);
+
+  const showBGMenu = () => {
+    setIsMainMenuVisiable(false);
+    setIsBGMenuVisiable(true);
+  };
+  const showTextMenu = () => {
+    setIsMainMenuVisiable(false);
+    setIsTextMenuVisiable(true);
+  };
+
+  const switchToMainMenu = () => {
+    setIsBGMenuVisiable(false);
+    setIsTextMenuVisiable(false);
+    setIsMainMenuVisiable(true);
+  };
 
   const pickImage = async () => {
-    console.log('open image picker');
     await launchImageLibrary({mediaType: 'photo'}, response => {
       if (!response.didCancel) {
-        console.log('image picker response', response.assets[0].uri);
         setSelectedImage(response.assets[0].uri);
       }
     });
   };
-
+  const addText = () => {
+    setIsAddingText(true);
+  };
   const pickVideo = async () => {
     await launchImageLibrary({mediaType: 'video'}, response => {
       if (!response.didCancel) {
@@ -36,95 +46,175 @@ const ScratchPad = () => {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          flexDirection: 'column',
-          backgroundColor: 'cyan',
-        },
-      ]}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'black',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingTop: 20,
-        }}>
+    <View style={styles.container}>
+      <View style={styles.topBar}>
         <SquareButton
           action={pickImage}
           imageSource={require('../resources/cross.png')}
-          size={40}
         />
         <SquareButton
           action={pickImage}
           imageSource={require('../resources/preview.png')}
-          size={40}
         />
-        <SquareButton
-          action={pickImage}
-          imageSource={require('../resources/export.png')}
-          size={40}
-        />
+        {isMainMenuVisiable ? (
+          <SquareButton
+            action={pickImage}
+            imageSource={require('../resources/export.png')}
+          />
+        ) : (
+          <SquareButton
+            action={switchToMainMenu}
+            imageSource={require('../resources/ok.png')}
+          />
+        )}
       </View>
-      <View
-        style={{
-          flex: 8,
-          backgroundColor: 'darkorange',
-          borderColor: 'black',
-          borderWidth: 1,
-        }}>
+      <View style={styles.craftBoard}>
         {selectedImage && (
           <Image source={{uri: selectedImage}} style={{flex: 1}} />
         )}
+        {isAddingText && (
+          <TextInput
+            style={{marginTop: 20, borderWidth: 1, padding: 10}}
+            placeholder="Enter Text"
+            value={text}
+            onChangeText={setText}
+          />
+        )}
       </View>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: 'black',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: 10,
-        }}>
-        <SquareButton
-          action={pickImage}
-          title="Background"
-          imageSource={require('../resources/background.png')}
-          size={60}
-        />
-        <SquareButton
-          action={pickImage}
-          title="Image"
-          imageSource={require('../resources/add_image.png')}
-          size={60}
-        />
-        <SquareButton
-          action={pickImage}
-          title="Text"
-          imageSource={require('../resources/add-text.png')}
-          size={60}
-        />
-        <SquareButton
-          action={pickImage}
-          title="Sticker"
-          imageSource={require('../resources/sticker.png')}
-          size={60}
-        />
+      <View style={styles.bottomBar}>
+        {isMainMenuVisiable && (
+          <>
+            <SquareButton
+              action={showBGMenu}
+              title="Background"
+              imageSource={require('../resources/background.png')}
+              size={60}
+            />
+            <SquareButton
+              action={showBGMenu}
+              title="Photos"
+              imageSource={require('../resources/add_image.png')}
+            />
+            <SquareButton
+              action={showTextMenu}
+              title="Text"
+              imageSource={require('../resources/add-text.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Sticker"
+              imageSource={require('../resources/sticker.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Audio"
+              imageSource={require('../resources/sound.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Frame"
+              imageSource={require('../resources/grid.png')}
+            />
+          </>
+        )}
+        {isBGMenuVisiable && (
+          <>
+            <SquareButton
+              action={switchToMainMenu}
+              title="Back"
+              imageSource={require('../resources/back.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Image"
+              imageSource={require('../resources/image.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Camera"
+              imageSource={require('../resources/camera.png')}
+            />
+            <SquareButton
+              action={addText}
+              title="Gallery"
+              imageSource={require('../resources/gallery.png')}
+            />
+            <SquareButton
+              action={addText}
+              title="Color"
+              imageSource={require('../resources/paint-bucket.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Animation"
+              imageSource={require('../resources/bounce.png')}
+            />
+          </>
+        )}
+        {isTextMenuVisiable && (
+          <>
+            <SquareButton
+              action={switchToMainMenu}
+              title="Back"
+              imageSource={require('../resources/back.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Font"
+              imageSource={require('../resources/font.png')}
+            />
+            <SquareButton
+              action={addText}
+              title="Color"
+              imageSource={require('../resources/paint-bucket.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Size"
+              imageSource={require('../resources/font-size.png')}
+            />
+            <SquareButton
+              action={addText}
+              title="Align"
+              imageSource={require('../resources/text-align.png')}
+            />
+            <SquareButton
+              action={pickImage}
+              title="Shadow"
+              imageSource={require('../resources/exposure.png')}
+            />
+          </>
+        )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  containerr: {
-    flex: 1,
-    backgroundColor: 'red',
-  },
   container: {
     flex: 1,
+  },
+  topBar: {
+    flex: 0.8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  craftBoard: {
+    flex: 10,
+    backgroundColor: 'darkorange',
+    borderColor: 'black',
+    borderWidth: 1,
+  },
+  bottomBar: {
+    flex: 1,
+    backgroundColor: 'black',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
 });
 export default ScratchPad;

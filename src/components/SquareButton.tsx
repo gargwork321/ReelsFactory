@@ -30,7 +30,7 @@ const SquareButton = ({
 }: ButtonProps) => {
   return (
     <TouchableOpacity
-      style={[styles.button, {width: size + 20, height: size}, buttonStyle]}
+      style={[styles.button, {width: size + 15, height: size}, buttonStyle]}
       onPress={action}>
       {imageSource && (
         <Image source={imageSource} style={[styles.image, imageStyle]} />
@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
   image: {
     width: 30,
     height: 30,
-    tintColor: 'white',
   },
   title: {
     color: 'white',
