@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Reels factory need pemission to facilitate you </string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Reels factory need pemission to facilitate you </string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Reels factory need pemission to facilitate you </string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
